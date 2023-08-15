@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_head %}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="{% static 'base.css'%}">
+  <script src="{% static 'bootstrap.bundle.min.js'%}"></script>
+  <script src="{% static 'home.js'%}"></script>
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{% static 'bootstrap.min.css'%}" >
+
+  <script>
+    function toggleMenu() {
+        let toggle = document.querySelector('.toggle');
+        let sidebar = document.querySelector('.sidebar');
+        let main = document.querySelector('.main');
+        toggle.classList.toggle('active');
+        sidebar.classList.toggle('active');
+        main.classList.toggle('active')
+    }  
+    function myFunction(id) {
+           try {
+                var element = document.getElementById(id);
+                element.classList.add("current");                       
+                while (element = element.previousElementSibling)
+                    element.classList.add("complete");  
+                if(id == "subj"){
+                    document.getElementById("Objective").hidden = true
+                    document.getElementById("Subjective").hidden = false
+                    document.getElementById("Assessment").hidden = true  
+                }
+                else if(id == "obj") {
+                    document.getElementById("Objective").hidden= false
+                    document.getElementById("Subjective").hidden = true 
+                    document.getElementById("Assessment").hidden = true 
+                }
+                else if (id == "assess") {
+                    document.getElementById("Objective").hidden= true
+                    document.getElementById("Subjective").hidden = true 
+                    document.getElementById("Assessment").hidden = false 
+                }
+                else if (id == "plan") {
+                 //   document.getElementById(id).hidden = true
+                }
+                else if (id == "dis") {
+                //    document.getElementById(id).hidden = true
+                }
+                else if (id == "inv") {
+                 //   document.getElementById(id).hidden = true
+                }
+            } catch (error) {
+                console.error(error);
+            }
+      }
+
+</script>
+
+{% endblock %}
+   
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-3 sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-primary">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+              <a href="#" class="nav-link text-white">
+                <i class="fa fa-ravelry fa-lg me-2"></i>
+                <span class="fs-4">Ruskin Vet App</span>
+            </a>
+
+          </a>
+      <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+            <a href="/" class="nav-link text-white">
+                <i class="fa fa-home me-2">  </i>
+                    Home
+            </a>
+            </li>
+            <li>
+            <a href="/calendar" class="nav-link text-white">
+                <i class="fa fa-calendar me-2">  </i>
+                    Calendar
+            </a>
+            </li>
+            <li>
+            <a href="/pet_parents" class="nav-link text-white">
+                <i class="fa fa-user-circle-o me-2">  </i>
+                    Pet Parents
+            </a>
+            </li>
+            <li>
+            <a href="/pets" class="nav-link text-white">
+                <i class="fa fa-paw me-2">  </i>
+                    Pets
+            </a>
+            </li>
+            <li style="background: #032d60;">
+                <a href="#" class="nav-link text-white">
+                <i class="fa fa-calendar-check-o me-2">  </i>
+                    Visits
+                </a>
+            </li>
+            <li>
+                <a href="/integration" class="nav-link text-white">
+                <i class="fa fa-question-circle me-2">  </i>
+                  Integration
+                </a>
+            </li>
+      </ul>
+      <hr>
+      <div>
+            {% if user.is_authenticated %}
+            <a class="d-flex align-items-center text-center text-white text-decoration-none" href="{% url 'logout' %}">
+                <i class="fa fa-sign-out me-2">  </i>
+                Sign Out
+            </a>
+            {% else %}
+            <a class="d-flex align-items-center text-center text-white text-decoration-none" href="{% url 'home' %}">Sign In</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-9 main">
+    <div class="topbar">
+        <div class="toggle" onclick="toggleMenu();">
+        </div>
+        <div class="search">
+            <label>
+                <input type="text" placeholder="Search Here">
+                 <i class="fa fa-search">  </i>
+            </label>
+        </div>
+      <div class="user">
+            <img src="{% static 'user.jpg' %}">
+      </div>
+    </div>
+    <br>
+    <br>
+    <h4 style="color:#6c6d6e;">Visit Details</h4>
+        <div class="progress_container">
+            <ul class="step-menu">
+            <li role="button" id = "subj" class="current" onclick="myFunction(this.id)">Subjective</li>
+            <li role="button" id = "obj" onclick="myFunction(this.id)">Objective</li>
+            <li role="button" id = "assess" onclick="myFunction(this.id)">Assessment</li>
+            <li role="button" id = "plan" onclick="myFunction(this.id)">Plan</li>
+            <li role="button" id = "dis" onclick="myFunction(this.id)">Discharge</li>
+            <li role="button" id = "inv" onclick="myFunction(this.id)">Invoice</li>
+            </ul>
+        </div>
+        <div class="row" id="Subjective">
+            <div class="col-md-6">
+            <form class="main-form">
+                <div class="form-group">
+                    <label for="initcomp">Initial Complaint</label>
+                    <textarea class="form-control" id="initcomp" rows="5">{{customer_visit.reason}}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="medsup">Current Medications and Supplements</label>
+                    <textarea class="form-control" id="medsup" rows="5">{{customer_visit.meds_suppl}}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="history">History</label>
+                    <textarea class="form-control" id="history" rows="5">{{customer_visit.history}}</textarea>
+                </div>
+            </form>
+            </div>
+            <div class="col-md-6">
+                <form class="main-form">
+                    <div class="form-group">
+                        <label for="initcomp">Estimates</label>
+                        <textarea class="form-control" id="initcomp" rows="5"></textarea>
+                    </div>
+                </form> 
+            </div>        
+        </div>
+        <div id="Objective" hidden="true">
+            <form class="row">
+                <div class="col-sm-3">
+                <label for="temp" class="form-label">Temperature</label>
+                <text type="integer" class="form-control" id="temp">{{customer_visit.temperature}}</text>
+                </div>
+                <div class="col-sm-3">
+                <label for="pulse" class="form-label">Pulse</label>
+                <text type="integer" class="form-control" id="pulse">{{customer_visit.pulse}}</text>
+                </div>
+                <div class="col-md-6">
+                    <form class="main-form">
+                        <div class="form-group">
+                            <label for="initcomp">Estimates</label>
+                            <textarea class="form-control" id="initcomp" rows="5"></textarea>
+                        </div>
+                    </form> 
+                </div>
+                <div class="row">
+                <div class="col-sm-3">
+                        <div class="form-group"> 
+                            <label for="respRate" class="form-label">Respiratory Rate</label>
+                          <text type ="text" class="form-select" aria-label="Respiratory Rate">{{customer_visit.respiratory_rate}}</text>
+                        </div>
+                </div>
+                <div class="col-sm-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="gridCheck">
+                            <label class="form-check-label" for="gridCheck">
+                                Check me out
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="gridCheck">
+                            <label class="form-check-label" for="gridCheck">
+                                Second Tag
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label for="weight" class="form-label">Weight</label>
+                         <text type="text" class="form-control" id="weight">{{customer_visit.weight}}</text>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group" align-items-center> 
+                            <label for="wt_unit" class="form-label">Weight Unit</label>
+                            <text type="text" class="form-control" id="wt_unit">{{customer_visit.weight_unit}}</text>
+                        </div>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label for="mucus" class="form-label">Mucus Membrane</label>
+                        <text type="text" class="form-control" id="mucus">{{customer_visit.mucus_membrane}}</text>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="mentation" class="form-label">Mentation</label>
+                        <text type="text" class="form-control" id="mentation">{{customer_visit.mucus_mentation}}</text>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <form class="main-form">
+                            <div class="form-group">
+                                <label for="initcomp">Notes</label>
+                                <textarea class="form-control" id="initcomp" rows="5">{{customer_visit.notes}}</textarea>
+                            </div>
+                        </form> 
+                </div>
+                </div>
+            </form>
+        </div>
+        <div class="row" id="Assessment" hidden="true">
+                <div class="col-md-5" style="justify-content: end;">
+                    <div class="form-group">
+                        <label for="initcomp">Problem List</label>
+                        <textarea class="form-control" id="initcomp" rows="3">{{customer_visit.problem_list}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-2" id="moveArrow1">
+                    <a href="#">
+                        <i class="fa fa-chevron-left fa-5x "> </i>
+                    </a>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="initcomp">Problem List (AI Recommended)</label>
+                        <textarea class="form-control" id="initcomp" rows="3">{{customer_visit.problem_list_ai}}</textarea>
+                    </div>
+                </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="initcomp">Diagnosis</label>
+                    <textarea class="form-control" id="initcomp" rows="3">{{customer_visit.diagnosis}}</textarea>
+                </div>
+            </div>
+            <div class="col-md-2" id="moveArrow2">
+                <a href="#">
+                    <i class="fa fa-chevron-left fa-5x "> </i>
+                </a>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="initcomp">Diagnosis (AI Recommended)</label>
+                    <textarea class="form-control" id="initcomp" rows="3">{{customer_visit.diagnosis_ai}}</textarea>
+                </div>
+            </div>
+
+            <div class="col-md-5" >
+                <div class="form-group">
+                    <label for="initcomp">Assessment</label>
+                    <textarea class="form-control" id="initcomp" rows="3">{{customer_visit.assessment}}</textarea>
+                </div>
+            </div>
+            <div class="col-md-2" id="moveArrow3">
+                <a href="#">
+                    <i class="fa fa-chevron-left fa-5x "> </i>
+                </a>
+           </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="initcomp">Assessment (AI Recommended)</label>
+                    <textarea class="form-control" id="initcomp" rows="3">{{customer_visit.assessment_ai}}</textarea>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="initcomp">Prognosis</label>
+                    <textarea class="form-control" id="initcomp" rows="3">{{customer_visit.prognosis}}</textarea>
+                </div>
+            </div>
+            <div class="col-md-2" id="moveArrow4">
+                <a href="#">
+                    <i class="fa fa-chevron-left fa-5x "> </i>
+                </a>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="initcomp">Prognosis (AI Recommended)</label>
+                    <textarea class="form-control" id="initcomp" rows="3">{{customer_visit.prognosis_ai}}</textarea>
+                </div>
+            </div>
+        </div> 
+            
+    </div>
+</div>
+</div><!--Row Div-->
+
+{% endblock %}
